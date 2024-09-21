@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+// Import useState
 import Link from "next/link";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
@@ -8,6 +10,53 @@ import { Address } from "~~/components/scaffold-eth";
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
+
+  const [inputValue, setInputValue] = useState(""); // State for input value
+  const [loading, setLoading] = useState(false); // State for button loading
+
+  const [userData, setUserData] = useState<any[]>([]);
+
+  const fetchUserData = async () => {
+    if (!connectedAddress) return;
+
+    const response = await fetch(`/api/getinfo?address=${connectedAddress}`);
+    const data = await response.json();
+    setUserData(data);
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, [connectedAddress]);
+
+  // Function to handle save action
+  const handleSave = async () => {
+    if (!connectedAddress || !inputValue) return; // Validate input
+
+    setLoading(true); // Start loading
+    try {
+      const response = await fetch("/api/saveinfo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          address: connectedAddress,
+          data: inputValue, // Data to save
+        }),
+      });
+      if (response.ok) {
+        alert("Data saved successfully!");
+      } else {
+        alert("Failed to save data.");
+      }
+    } catch (error) {
+      console.error("Error saving data:", error);
+    } finally {
+      setInputValue("");
+      fetchUserData();
+      setLoading(false); // Stop loading
+    }
+  };
 
   return (
     <>
@@ -21,24 +70,35 @@ const Home: NextPage = () => {
             <p className="my-2 font-medium">Connected Address:</p>
             <Address address={connectedAddress} />
           </div>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-white text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-white text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-white text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
         </div>
 
+        {connectedAddress && (
+          <>
+            <div className="mt-4">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={e => setInputValue(e.target.value)} // Update state
+                placeholder="Enter some input..."
+                className="input input-bordered w-full max-w-xs"
+              />
+            </div>
+            <button
+              onClick={handleSave}
+              className={`btn mt-4 ${loading ? "btn-disabled" : ""}`} // Disable when loading
+              disabled={loading} // Prevent multiple clicks
+            >
+              {loading ? "Saving..." : "Save"}
+            </button>
+
+            <div className="mt-8">
+              <h2 className="text-xl">Your Data:</h2>
+              <ul>
+                {Array.isArray(userData) ? userData.map((item, index) => <li key={index}>{item.data}</li>) : <li></li>}
+              </ul>
+            </div>
+          </>
+        )}
         <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
           <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
             <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
