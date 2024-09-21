@@ -11,7 +11,7 @@ const UserDataSchema = new mongoose.Schema<IUserData>({
   data: { type: String, required: true },
 });
 
-const UserData = mongoose.models.UserData || mongoose.model<IUserData>("UserData", UserDataSchema);
+const UserData = mongoose.models.UserData || mongoose.model("UserData", UserDataSchema);
 
 export async function GET() {
   try {
@@ -22,7 +22,7 @@ export async function GET() {
 
     return NextResponse.json(userData, { status: 200 });
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching data: ", error);
     return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 });
   }
 }
