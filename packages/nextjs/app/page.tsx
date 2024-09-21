@@ -9,11 +9,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 // Import the CSS for styling
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
+
+  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("YourContract");
 
   const [inputValue, setInputValue] = useState(""); // State for input value
   const [loading, setLoading] = useState(false); // State for button loading
@@ -54,7 +57,7 @@ const Home: NextPage = () => {
         toast.error("Failed to save data."); // Show error toast
       }
     } catch (error) {
-      console.error("Error saving data:", error);
+      toast.error("Error saving data"); // Show error toast
       console.error("Error saving data:", error);
     } finally {
       setInputValue("");
@@ -112,6 +115,26 @@ const Home: NextPage = () => {
                   )}
                 </ul>
               </div>
+            </div>
+
+            <div className="mt-8">
+              <button
+                className="btn btn-primary mt-4"
+                onClick={async () => {
+                  try {
+                    await writeYourContractAsync({
+                      functionName: "mint",
+                      args: [connectedAddress],
+                    });
+                    toast.success("Minted successfully!"); // Show success toast
+                  } catch (e) {
+                    toast.error("Error saving data");
+                    console.error("Error setting greeting:", e);
+                  }
+                }}
+              >
+                Mint
+              </button>
             </div>
           </>
         )}

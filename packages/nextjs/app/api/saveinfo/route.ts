@@ -20,6 +20,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Data saved successfully" }, { status: 200 });
   } catch (error) {
     console.error("Error saving data:", error);
-    return NextResponse.json({ error: "Failed to save data" + process.env.MONGOURL }, { status: 500 });
+    return NextResponse.json({ error: "Failed to save data" }, { status: 500 });
   }
 }
