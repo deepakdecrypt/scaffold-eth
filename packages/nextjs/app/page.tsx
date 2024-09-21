@@ -4,9 +4,13 @@ import { useEffect, useState } from "react";
 // Import useState
 import Link from "next/link";
 import type { NextPage } from "next";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
+
+// Import the CSS for styling
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
@@ -45,11 +49,12 @@ const Home: NextPage = () => {
         }),
       });
       if (response.ok) {
-        alert("Data saved successfully!");
+        toast.success("Data saved successfully!"); // Show success toast
       } else {
-        alert("Failed to save data.");
+        toast.error("Failed to save data."); // Show error toast
       }
     } catch (error) {
+      console.error("Error saving data:", error);
       console.error("Error saving data:", error);
     } finally {
       setInputValue("");
@@ -60,6 +65,7 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="flex items-center flex-col flex-grow pt-10">
         <div className="px-5">
           <h1 className="text-center">
@@ -79,7 +85,7 @@ const Home: NextPage = () => {
                 type="text"
                 value={inputValue}
                 onChange={e => setInputValue(e.target.value)} // Update state
-                placeholder="Enter some input..."
+                placeholder="Enter your content..."
                 className="input input-bordered w-full max-w-xs"
               />
             </div>
@@ -92,17 +98,17 @@ const Home: NextPage = () => {
             </button>
 
             <div className="mt-8">
-              <h2 className="text-xl">All User Data:</h2>
+              <h2 className="text-xl">Book Content</h2>
               <div className="overflow-auto h-60 border border-gray-300 rounded-md">
                 <ul className="p-2">
                   {Array.isArray(userData) && userData.length > 0 ? (
                     userData.map((item, index) => (
                       <li key={index} className="py-1">
-                        Address: {item.address}, Data: {item.data}
+                        Address: {item.address}, Content: {item.data}
                       </li>
                     ))
                   ) : (
-                    <li>No data available.</li>
+                    <li></li>
                   )}
                 </ul>
               </div>

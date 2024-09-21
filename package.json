@@ -44,6 +44,7 @@
     "node": ">=18.17.0"
   },
   "dependencies": {
-    "mongoose": "^8.6.3"
+    "mongoose": "^8.6.3",
+    "react-toastify": "^10.0.5"
   }
 }

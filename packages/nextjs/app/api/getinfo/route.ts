@@ -23,6 +23,6 @@ export async function GET() {
     return NextResponse.json(userData, { status: 200 });
   } catch (error) {
     console.error("Error fetching data:", error);
-    return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch data" + process.env.MONGOURL }, { status: 500 });
   }
 }
