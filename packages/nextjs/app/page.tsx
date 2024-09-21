@@ -126,7 +126,7 @@ const Home: NextPage = () => {
                       functionName: "mint",
                       args: [connectedAddress],
                     });
-                    toast.success("Minted successfully!"); // Show success toast
+                    toast.success("Book Published"); // Show success toast
                   } catch (e) {
                     toast.error("Error saving data");
                     console.error("Error setting greeting:", e);
