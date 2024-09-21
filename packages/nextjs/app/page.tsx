@@ -19,7 +19,7 @@ const Home: NextPage = () => {
   const fetchUserData = async () => {
     if (!connectedAddress) return;
 
-    const response = await fetch(`/api/getinfo?address=${connectedAddress}`);
+    const response = await fetch(`/api/getinfo`);
     const data = await response.json();
     setUserData(data);
   };
@@ -92,10 +92,20 @@ const Home: NextPage = () => {
             </button>
 
             <div className="mt-8">
-              <h2 className="text-xl">Your Data:</h2>
-              <ul>
-                {Array.isArray(userData) ? userData.map((item, index) => <li key={index}>{item.data}</li>) : <li></li>}
-              </ul>
+              <h2 className="text-xl">All User Data:</h2>
+              <div className="overflow-auto h-60 border border-gray-300 rounded-md">
+                <ul className="p-2">
+                  {Array.isArray(userData) && userData.length > 0 ? (
+                    userData.map((item, index) => (
+                      <li key={index} className="py-1">
+                        Address: {item.address}, Data: {item.data}
+                      </li>
+                    ))
+                  ) : (
+                    <li>No data available.</li>
+                  )}
+                </ul>
+              </div>
             </div>
           </>
         )}

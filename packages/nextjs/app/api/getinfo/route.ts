@@ -1,26 +1,25 @@
-// packages/nextjs/app/api/save/get.ts
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
-const UserDataSchema = new mongoose.Schema({
+interface IUserData extends Document {
+  address: string;
+  data: string;
+}
+
+const UserDataSchema = new mongoose.Schema<IUserData>({
   address: { type: String, required: true },
   data: { type: String, required: true },
 });
 
-const UserData = mongoose.models.UserData || mongoose.model("UserData", UserDataSchema);
+const UserData = mongoose.models.UserData || mongoose.model<IUserData>("UserData", UserDataSchema);
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const address = searchParams.get("address");
-
-  if (!address) {
-    return NextResponse.json({ error: "Address is required" }, { status: 400 });
-  }
-
+export async function GET() {
   try {
     await mongoose.connect(process.env.MONGOURL ?? "");
 
-    const userData = await UserData.find({ address });
+    // Fetch all user data
+    const userData = await UserData.find({});
+
     return NextResponse.json(userData, { status: 200 });
   } catch (error) {
     console.error("Error fetching data:", error);
