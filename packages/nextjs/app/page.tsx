@@ -100,22 +100,22 @@ const Home: NextPage = () => {
               {loading ? "Saving..." : "Save"}
             </button>
 
-            <div className="mt-8">
-              <h2 className="text-xl">Book Content</h2>
-              <div className="overflow-auto h-60 border border-gray-300 rounded-md">
-                <ul className="p-2">
-                  {Array.isArray(userData) && userData.length > 0 ? (
-                    userData.map((item, index) => (
-                      <li key={index} className="py-1">
-                        Address: {item.address}, Content: {item.data}
-                      </li>
-                    ))
-                  ) : (
-                    <li></li>
-                  )}
-                </ul>
-              </div>
-            </div>
+            {Array.isArray(userData) && userData.length > 0 && (
+              <>
+                <div className="mt-8">
+                  <h2 className="text-xl">Book Content</h2>
+                  <div className="overflow-auto h-60 border border-gray-300 rounded-md">
+                    <ul className="p-2">
+                      {userData.map((item, index) => (
+                        <li key={index} className="py-1">
+                          Address: {item.address}, Content: {item.data}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="mt-8">
               <button
